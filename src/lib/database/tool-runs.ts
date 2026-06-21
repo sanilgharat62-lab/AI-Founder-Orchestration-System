@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import os from "os";
 
 export interface ToolRunRecord {
   id: string;
@@ -22,7 +23,7 @@ export interface WaitlistLeadRecord {
   createdAt: string;
 }
 
-const DB_DIR = path.join(process.cwd(), ".data");
+const DB_DIR = path.join(os.tmpdir(), "founder-os-data");
 const DB_FILE = path.join(DB_DIR, "tool-runs.json");
 const WAITLIST_FILE = path.join(DB_DIR, "waitlist-leads.json");
 
@@ -81,3 +82,4 @@ export function saveWaitlistLead(record: Omit<WaitlistLeadRecord, "id" | "create
   });
   return saved;
 }
+
