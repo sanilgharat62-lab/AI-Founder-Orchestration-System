@@ -1,8 +1,9 @@
 import fs from "fs";
 import path from "path";
+import os from "os";
 import { MemoryStore, AgentName, Citation, FounderScorecard } from "@/types";
 
-const MEMORY_DIR = path.join(process.cwd(), ".memory");
+const MEMORY_DIR = path.join(os.tmpdir(), "founder-os-memory");
 
 function ensureDir() {
   if (!fs.existsSync(MEMORY_DIR)) fs.mkdirSync(MEMORY_DIR, { recursive: true });
@@ -67,3 +68,4 @@ export function updateMemoryScorecard(id: string, scorecard: FounderScorecard): 
   store.updatedAt = new Date().toISOString();
   saveMemory(store);
 }
+
