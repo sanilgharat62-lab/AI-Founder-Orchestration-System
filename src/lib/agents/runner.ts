@@ -72,7 +72,7 @@ export async function runAgent(
   idea: string,
   context: string
 ): Promise<{ output: string; sections: Section[]; citations?: Citation[] }> {
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
 
   let evidenceBlock = "";
   let evidenceCitations: Citation[] = [];
@@ -87,13 +87,16 @@ export async function runAgent(
     ? `${userPrompt}\n\nWeb evidence sources (cite inline as [1], [2], etc. when used):\n\n${evidenceBlock}`
     : userPrompt;
 
-  if (apiKey && apiKey.startsWith("sk-")) {
+  if (apiKey && apiKey.startsWith("gsk_")) {
     try {
       const { OpenAI } = await import("openai");
-      const openai = new OpenAI({ apiKey });
+      const openai = new OpenAI({
+        apiKey,
+        baseURL: "https://api.groq.com/openai/v1",
+      });
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o-mini",
+        model: "llama-3.3-70b-versatile",
         messages: [
           { role: "system", content: agent.systemPrompt },
           { role: "user", content: fullPrompt },
@@ -115,7 +118,7 @@ export async function runAgent(
 
       return { output, sections: parseOutputToSections(output), citations };
     } catch (err) {
-      console.error(`OpenAI error for ${agent.name}:`, err);
+      console.error(`Groq error for ${agent.name}:`, err);
     }
   }
 
